@@ -1,4 +1,4 @@
-# $Id: Simple.pm,v 1.3 2003-01-19 21:04:58 dstuart Exp $
+# $Id: Simple.pm,v 1.4 2003-01-19 21:32:12 dstuart Exp $
 ###############################################################################
 #
 # File:    Simple.pm
@@ -128,9 +128,9 @@ user/password using Kerberos 5 protocol.  The module's authenticate function
 takes a username (or user@kerberos_realm) and a password, and authenticates
 that user using the local Kerberos 5 installation.  It was initially created
 to allow perl scripts to perform authentication against a Microsoft Active
-Directory (AD) server.
+Directory (AD) server that was configured to accept Kerberos client requests.
 
-It is important to note: This module only performs simple authentication.  It
+B<It is important to note:> This module only performs simple authentication.  It
 does not get, grant, use, or retain any kerberos tickets.  It will check
 use credentials against the Kerberos server (as configured on the local
 system) each time the I<authenticate> method is called.
@@ -163,15 +163,16 @@ specifying a realm:
 
 =head1 METHODS
 
-B<authenticate(%user[@realm], $password)>
+B<authenticate($user[@realm], $password)>
 
 =over
 
 the I<authenticate> method takes the user (or user@realm) and a password, and
 uses kerberos 5 (the local systems installation) to authenticate the user.
 
-if the user/password is good, I<authenticate> will return true (1). Otherwise,
-a false value is returned and the error code is stored in the object.
+if the user/password is good, I<authenticate> will return a true value.
+Otherwise, a false value is returned and the error code is stored in the
+object.
 
   if($krb->authenticate($user, $pw)) {
       print "$user authentication successful\n";
@@ -212,13 +213,14 @@ I<errstr> method to get a meaningful error message.
 
 =head1 BUGS
 
-This version of I<Authen::Krb5::Simple> does not support empty passwords.  If you
-pass C<''> as a password I<authenticate> will print a warning and return false.
-However there will be no error code or string when C<errstr> is called.
+This version of I<Authen::Krb5::Simple> does not support empty passwords.
+If you pass an empty string (C<''>) as a password, I<authenticate> will print
+a warning and return false, but there will be no error code or string when
+I<errstr> is called.
 
 =head1 AUTHOR
 
-Damien S. Stuart, E<lt>damien.stuart@usi.net<gt>
+Damien S. Stuart, E<lt>damien.stuart@usi.netE<gt>
 
 =head1 SEE ALSO
 
