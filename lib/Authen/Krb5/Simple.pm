@@ -1,4 +1,4 @@
-# $Id: Simple.pm,v 1.4 2003-01-19 21:32:12 dstuart Exp $
+# $Id: Simple.pm,v 1.5 2003-03-14 12:33:21 dstuart Exp $
 ###############################################################################
 #
 # File:    Simple.pm
@@ -21,7 +21,7 @@ require DynaLoader;
 
 our @ISA = qw(DynaLoader);
 
-our $VERSION = '0.30';
+our $VERSION = '0.31';
 
 bootstrap Authen::Krb5::Simple $VERSION;
 
@@ -33,7 +33,7 @@ sub new {
 
     bless {
         _err_code   => 0,
-        _def_realm  => $args{realm} || ''
+        _realm  => $args{realm} || ''
     }, $class
 }
 
@@ -128,11 +128,11 @@ user/password using Kerberos 5 protocol.  The module's authenticate function
 takes a username (or user@kerberos_realm) and a password, and authenticates
 that user using the local Kerberos 5 installation.  It was initially created
 to allow perl scripts to perform authentication against a Microsoft Active
-Directory (AD) server that was configured to accept Kerberos client requests.
+Directory (AD) server configured to accept Kerberos client requests.
 
 B<It is important to note:> This module only performs simple authentication.  It
 does not get, grant, use, or retain any kerberos tickets.  It will check
-use credentials against the Kerberos server (as configured on the local
+user credentials against the Kerberos server (as configured on the local
 system) each time the I<authenticate> method is called.
 
 =head1 CONSTRUCTOR
@@ -177,7 +177,7 @@ object.
   if($krb->authenticate($user, $pw)) {
       print "$user authentication successful\n";
   } else {
-      print "$user authentication failed\n";
+      print "$user authentication failed: ", $krb->errstr(), "\n";
   }
         
 =back

@@ -1,4 +1,4 @@
-Authen::Krb5::Simple version 0.20
+Authen::Krb5::Simple version 0.31
 ===============================================================================
 
 The Authen::Krb5::Simple module provides a means to authenticate a user/password
@@ -23,7 +23,7 @@ DEPENDENCIES
 
 This module requires the Kerberos 5 header and library files.
 
--------------------------------------------------------------------------------
+---------------------------------------------------------------------------
 
 NAME
     Authen::Krb5::Simple - Basic user authentication using Kerberos 5
@@ -56,11 +56,12 @@ DESCRIPTION
     function takes a username (or user@kerberos_realm) and a password, and
     authenticates that user using the local Kerberos 5 installation. It was
     initially created to allow perl scripts to perform authentication
-    against a Microsoft Active Directory (AD) server.
+    against a Microsoft Active Directory (AD) server configured to accept
+    Kerberos client requests.
 
     It is important to note: This module only performs simple
     authentication. It does not get, grant, use, or retain any kerberos
-    tickets. It will check use credentials against the Kerberos server (as
+    tickets. It will check user credentials against the Kerberos server (as
     configured on the local system) each time the *authenticate* method is
     called.
 
@@ -87,20 +88,20 @@ CONSTRUCTOR
           my $krb = Authen::Krb5::Simple->new(realm => 'another.realm.net');
 
 METHODS
-    authenticate(%user[@realm], $password)
+    authenticate($user[@realm], $password)
 
         the *authenticate* method takes the user (or user@realm) and a
         password, and uses kerberos 5 (the local systems installation) to
         authenticate the user.
 
-        if the user/password is good, *authenticate* will return true (1).
-        Otherwise, a false value is returned and the error code is stored in
-        the object.
+        if the user/password is good, *authenticate* will return a true
+        value. Otherwise, a false value is returned and the error code is
+        stored in the object.
 
           if($krb->authenticate($user, $pw)) {
               print "$user authentication successful\n";
           } else {
-              print "$user authentication failed\n";
+              print "$user authentication failed: ", $krb->errstr(), "\n";
           }
         
     realm([NEW.REALM])
@@ -123,12 +124,12 @@ METHODS
 
 BUGS
     This version of *Authen::Krb5::Simple* does not support empty passwords.
-    If you pass '' as a password *authenticate* will print a warning and
-    return false. However there will be no error code or string when
-    "errstr" is called.
+    If you pass an empty string ('') as a password, *authenticate* will
+    print a warning and return false, but there will be no error code or
+    string when *errstr* is called.
 
 AUTHOR
-    Damien S. Stuart, <damien.stuart@usi.net<gt>
+    Damien S. Stuart, <damien.stuart@usi.net>
 
 SEE ALSO
     perl, Kerberos5 documentation.

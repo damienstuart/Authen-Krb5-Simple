@@ -1,5 +1,9 @@
 Revision history for Perl extension Authen::Krb5::Simple.
 
+0.31  Fri Mar 14 07:14:33 2003
+    - Fixed bug where realm was not properly set by the constructor (Thanks
+      to Jorgen Andreasen for pointing that out to me).
+
 0.30  Sun Jan 19 15:56:00 2003
     - Removed export of authenticate method.
     - Added the CONFIG file for user auth tests, which are now optional.
