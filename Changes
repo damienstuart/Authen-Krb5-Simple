@@ -1,0 +1,10 @@
+Revision history for Perl extension Auth::Krb5.
+
+0.11  Wed Dec 25 20:53:23 2002
+	- Remove attempted support for empty passwords (currently causes a core
+      dump when perl exits).
+
+0.10  Wed Dec 25 12:04:23 2002
+	- original version; created by h2xs 1.21 with options
+		-A -n AuthKrb5 -v 0.10 -x
+

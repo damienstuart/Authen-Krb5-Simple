@@ -1,0 +1,19 @@
+# $Id: CONFIG,v 1.1.1.1 2003-01-19 20:33:34 dstuart Exp $
+###############################################################################
+#
+# File:    CONFIG
+#
+# Purpose: Specify test configuration parameters (user and password) for
+#          the Authen::Krb5::Simple module.
+#
+###############################################################################
+#
+
+# Uncomment and specify the test username and password if you want to run a
+# more complete authentication test. Leave them commented out to skip the user
+# authentication test.
+#
+#TEST_USER some_user
+#TEST_PASS some_pw
+
+###EOF###
