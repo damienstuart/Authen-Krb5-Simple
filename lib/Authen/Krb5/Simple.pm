@@ -1,4 +1,4 @@
-# $Id: Simple.pm,v 1.5 2003-03-14 12:33:21 dstuart Exp $
+# $Id: Simple.pm,v 1.6 2005-02-21 23:50:37 dstuart Exp $
 ###############################################################################
 #
 # File:    Simple.pm
@@ -21,7 +21,7 @@ require DynaLoader;
 
 our @ISA = qw(DynaLoader);
 
-our $VERSION = '0.31';
+our $VERSION = '0.32';
 
 bootstrap Authen::Krb5::Simple $VERSION;
 
@@ -101,7 +101,10 @@ Authen::Krb5::Simple - Basic user authentication using Kerberos 5
 
   use Authen::Krb5::Simple;
 
-  my $krb = Authen::Krb5::Simple->new([realm => 'MY.KRB.REALM']);
+  # Create a new Authen::Krb5::Simple object using
+  # the system default realm.
+  #
+  my $krb = Authen::Krb5::Simple->new();
 
   # Authenticate a user.
   #
@@ -120,6 +123,10 @@ Authen::Krb5::Simple - Basic user authentication using Kerberos 5
   #
   $krb->realm('MY.NEW.REALM');
 
+  # Create a new object pointing to another realm.
+  #
+  my $alt_krb = Authen::Krb5::Simple->new(realm => 'new.realm');
+  ...
 
 =head1 DESCRIPTION
 
@@ -215,8 +222,8 @@ I<errstr> method to get a meaningful error message.
 
 This version of I<Authen::Krb5::Simple> does not support empty passwords.
 If you pass an empty string (C<''>) as a password, I<authenticate> will print
-a warning and return false, but there will be no error code or string when
-I<errstr> is called.
+a warning and return false, but there will be no error code or string returned
+if the I<errstr> method is called.
 
 =head1 AUTHOR
 

@@ -1,4 +1,4 @@
-Authen::Krb5::Simple version 0.31
+Authen::Krb5::Simple version 0.32
 ===============================================================================
 
 The Authen::Krb5::Simple module provides a means to authenticate a user/password
@@ -12,17 +12,32 @@ To install this module edit the CONFIG file to set test username and password.
 This is optional.  If no username and password is given, then the user auth
 tests will be skipped.
 
+You can also specify the location of the Kerberos include and libs directories
+in the environment variables KRB5_INCLUDE and KRB5_LIB respectively.
+
 Once that is done, then type the following:
 
-   perl Makefile.PL  (answer the prompts)
+   perl Makefile.PL  [-krb5_prompt]
    make
    make test
    make install
 
+Note: The optional "-krb5_prompt" argument will force the Makefile
+      generator to prompt for the location of the krb5 include and
+      lib directories.
+
+      In the absence of the "-krb5_prompt" and the KRB5_XXX environment
+      variable mentioned above, the module will make an attempt to figure
+      out the location of the Kerberos 5 include and lib files.  If that
+      doesn't work, you will need to manually override using one of the
+      above methods.
+
 DEPENDENCIES
 
-This module requires the Kerberos 5 header and library files.
+This module requires the Kerberos 5 header and library files installed
+on the local system.
 
+Here is the Authen::Krb5::Simple man page:
 ---------------------------------------------------------------------------
 
 NAME
@@ -31,7 +46,10 @@ NAME
 SYNOPSIS
       use Authen::Krb5::Simple;
 
-      my $krb = Authen::Krb5::Simple->new([realm => 'MY.KRB.REALM']);
+      # Create a new Authen::Krb5::Simple object using
+      # the system default realm.
+      #
+      my $krb = Authen::Krb5::Simple->new();
 
       # Authenticate a user.
       #
@@ -49,6 +67,11 @@ SYNOPSIS
       # Set the current realm
       #
       $krb->realm('MY.NEW.REALM');
+
+      # Create a new object pointing to another realm.
+      #
+      my $alt_krb = Authen::Krb5::Simple->new(realm => 'new.realm');
+      ...
 
 DESCRIPTION
     The "Authen::Krb5::Simple" module provides a means to authenticate a
@@ -126,13 +149,14 @@ BUGS
     This version of *Authen::Krb5::Simple* does not support empty passwords.
     If you pass an empty string ('') as a password, *authenticate* will
     print a warning and return false, but there will be no error code or
-    string when *errstr* is called.
+    string returned if the *errstr* method is called.
 
 AUTHOR
     Damien S. Stuart, <damien.stuart@usi.net>
 
 SEE ALSO
     perl, Kerberos5 documentation.
+
 
 -------------------------------------------------------------------------------
 
