@@ -1,4 +1,4 @@
-# $Id: Simple.pm,v 1.1.1.1 2003-01-19 20:33:34 dstuart Exp $
+# $Id: Simple.pm,v 1.2 2003-01-19 21:00:16 dstuart Exp $
 ###############################################################################
 #
 # File:    Simple.pm
@@ -17,25 +17,15 @@ use strict;
 use warnings;
 use Carp;
 
-require Exporter;
 require DynaLoader;
 
-our @ISA = qw(Exporter DynaLoader);
+our @ISA = qw(DynaLoader);
 
-our %EXPORT_TAGS = (
-    'all' => [ qw( authenticate) ]
-);
-
-our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-
-our @EXPORT = qw();
-
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 bootstrap Authen::Krb5::Simple $VERSION;
 
-
-# Create the krb object.
+# Create the Kerberos 5 object.
 #
 sub new {
     my $class   = shift;
@@ -68,16 +58,7 @@ sub authenticate {
         $user .= "\@$self->{_realm}";
     }
 
-    my $res = krb5_auth($user, $pw);
-
-    if($res != 0) {
-        $self->{_err_code} = $res;
-        return 0;
-    }
-
-    $self->{_err_code} = 0;
-
-    return 1;
+    return(($self->{_err_code} = krb5_auth($user, $pw)) == 0);
 }
 
 # Return the error string from the most recent authenticate function.
@@ -85,9 +66,7 @@ sub authenticate {
 sub errstr {
     my $self = shift;
 
-    if($self->{_err_code} == 0) {
-        return '';
-    }
+    return '' if($self->{_err_code} == 0);
 
     return krb5_errstr($self->{_err_code});
 }
