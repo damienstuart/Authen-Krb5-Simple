@@ -1,6 +1,11 @@
-Revision history for Perl extension Auth::Krb5.
+Revision history for Perl extension Authen::Krb5::Simple.
 
-0.11  Wed Dec 25 20:53:23 2002
+0.30  Sun Jan 19 15:56:00 2003
+    - Removed export of authenticate method.
+    - Added the CONFIG file for user auth tests, which are now optional.
+    - Minor code tweaks.
+
+0.20  Wed Dec 25 20:53:23 2002
 	- Remove attempted support for empty passwords (currently causes a core
       dump when perl exits).
 

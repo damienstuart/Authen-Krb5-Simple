@@ -1,4 +1,4 @@
-# $Id: Simple.pm,v 1.2 2003-01-19 21:00:16 dstuart Exp $
+# $Id: Simple.pm,v 1.3 2003-01-19 21:04:58 dstuart Exp $
 ###############################################################################
 #
 # File:    Simple.pm
@@ -21,7 +21,7 @@ require DynaLoader;
 
 our @ISA = qw(DynaLoader);
 
-our $VERSION = '0.21';
+our $VERSION = '0.30';
 
 bootstrap Authen::Krb5::Simple $VERSION;
 
