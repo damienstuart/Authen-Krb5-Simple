@@ -1,4 +1,4 @@
-# $Id: Makefile.PL,v 1.1.1.1 2003-01-19 20:33:34 dstuart Exp $
+# $Id: Makefile.PL,v 1.2 2005-02-21 23:49:42 dstuart Exp $
 ###############################################################################
 #
 # File:    Makefile.PL
@@ -40,6 +40,15 @@ sub get_krb5_info {
     # a list of candidate directories.  Iterate through them hoping to find a
     # match.  Display the match as a default for the prompts.
     #
+
+    # If the ENV vars are specified, use them.
+    #
+    if($ENV{KRB5_INCLUDE} and $ENV{KRB5_LIB}) {
+        return($ENV{KRB5_INCLUDE}, $ENV{KRB5_LIB});
+    }
+
+    # Search the following directories in the following order
+    # (first match wins).
     my @krb_dirs = qw(
         /usr
         /usr/kerberos
@@ -59,8 +68,7 @@ sub get_krb5_info {
     
     my $lflag = 0;
     my $iflag = 0;
-    my $def_kinc = '';
-    my $def_klib = '';
+    my ($krb_inc, $krb_lib);
 
     foreach my $kdir (@krb_dirs) {
         my $klib = "$kdir/lib";
@@ -68,12 +76,12 @@ sub get_krb5_info {
     
         if(glob "$klib/libkrb5.*") {
             $lflag = 1;
-            $def_klib = $klib;
+            $krb_lib = $klib;
         }
     
         if(-f "$kinc/krb5.h") {
             $iflag = 1;
-            $def_kinc = $kinc;
+            $krb_inc = $kinc;
         }
     
         last if($lflag and $iflag);
@@ -81,11 +89,13 @@ sub get_krb5_info {
     
     # Prompt for the location of key Kerberos files.
     #
-    print "\nPlease enter information about your Kerberos5 installation.\n";
-    print " - (Press <Enter> to keep the default value):\n\n";
+    if($ENV{KRB5_PROMPT} or $ARGV[0] =~ '-krb5_prompt') {
+        print "\nPlease enter information about your Kerberos5 installation.\n";
+        print " - (Press <Enter> to keep the default value):\n\n";
     
-    my $krb_inc = get_resp('Enter Kerboros5 include directory', $def_kinc);
-    my $krb_lib = get_resp('Enter Kerberos5 lib directory', $def_klib);
+        $krb_inc = get_resp('Enter Kerboros5 include directory', $krb_inc);
+        $krb_lib = get_resp('Enter Kerberos5 lib directory', $krb_lib);
+    }
 
     return($krb_inc, $krb_lib);
 }
