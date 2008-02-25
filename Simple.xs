@@ -85,5 +85,3 @@ krb5_errstr(errcode)
     RETVAL = result;
     OUTPUT:
     RETVAL
-
-/***EOF***/
