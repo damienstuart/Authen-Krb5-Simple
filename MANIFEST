@@ -5,6 +5,7 @@ MANIFEST
 MANIFEST.SKIP
 README
 Simple.xs
+inc/Devel/CheckLib.pm
 lib/Authen/Krb5/Simple.pm
 t/01-compile.t
 t/02-ops.t

@@ -9,11 +9,56 @@
 #
 ###############################################################################
 #
+use lib 'inc';
+use Devel::CheckLib;
 use ExtUtils::MakeMaker;
 
-# Get krb5 info
+my ($krb5_inc, $krb5_lib);
+
+# Places we might find Kerberos5 libs.
 #
-my ($krb5_inc, $krb5_lib) = get_krb5_info();
+my @krb_lib_dirs =  qw(
+    /usr/lib64
+    /usr/lib
+    /usr/local/lib64
+    /usr/local/lib
+    /usr/lib64/krb5
+    /usr/lib/krb5
+    /usr/local/lib64/krb5
+    /usr/local/lib/krb5
+    /usr/lib64/krb
+    /usr/lib/krb
+    /usr/local/lib64/krb
+    /usr/local/lib/krb
+    /opt/krb5/lib64
+    /opt/krb5/lib
+    /opt/krb/lib64
+    /opt/krb/lib
+    /usr/heimdal/lib64
+    /usr/heimdal/lib
+    /usr/local/heimdal/lib64
+    /usr/local/heimdal/lib
+    /opt/heimdal/lib64
+    /opt/heimdal/lib
+);
+
+# If the ENV vars are specified, use them.
+#
+if(exists($ENV{KRB5_INCLUDE})) {
+    $krb5_inc = "-I$ENV{KRB5_INCLUDE}";
+}
+if(exists($ENV{KRB5_LIB})) {
+    $krb5_lib = "-L$ENV{KRB5_LIB}";
+    unshift(@krb_lib_dirs, $ENV{KRB5_LIB});
+}
+
+# See if the needed libs are available.  Take a shot at several "possible"
+# locations for these libs.
+#
+check_lib_or_exit(
+    lib     => [qw( krb5 k5crypto com_err )],
+    libpath => \@kr_lib_dirs
+);
 
 # Write out the Makefile
 #
@@ -21,96 +66,16 @@ WriteMakefile(
     'NAME'          => 'Authen::Krb5::Simple',
     'VERSION_FROM'  => 'lib/Authen/Krb5/Simple.pm',
     'PREREQ_PM'     => {},
-    ($] >= 5.005
+    ($] >= 5.006
         ? (
             ABSTRACT   => 'Perl module that performs Kerberos 5 authentication',
-            AUTHOR     => 'Damien S. Stuart <damien.stuart@usi.net>')
+            AUTHOR     => 'Damien S. Stuart <dstuart@dstuart.org>')
         : ()
     ),
-    'LIBS'      => ["-L$krb5_lib -lkrb5 -lk5crypto -lcom_err"],
+    'LIBS'      => ["$krb5_lib -lkrb5 -lk5crypto"],
     'DEFINE'    => '',
-    'INC'       => "-I$krb5_inc",
+    'INC'       => $krb5_inc,
 );
 
-###############################################################################
-
-sub get_krb5_info {
-    # TODO: smarter code to figure out reasonable defaults for krb libs.
-    # Figure out where the kerberos libs and include files are by staring with
-    # a list of candidate directories.  Iterate through them hoping to find a
-    # match.  Display the match as a default for the prompts.
-    #
-
-    # If the ENV vars are specified, use them.
-    #
-    if($ENV{KRB5_INCLUDE} and $ENV{KRB5_LIB}) {
-        return($ENV{KRB5_INCLUDE}, $ENV{KRB5_LIB});
-    }
-
-    # Search the following directories in the following order
-    # (first match wins).
-    my @krb_dirs = qw(
-        /usr
-        /usr/kerberos
-        /usr/kerberos5
-        /usr/krb
-        /usr/krb5
-        /opt/kerberos
-        /opt/kerberos5
-        /opt/krb
-        /opt/krb5
-        /usr/local
-        /usr/local/kerberos
-        /usr/local/kerberos5
-        /usr/local/krb
-        /usr/local/krb5
-    );
-    
-    my $lflag = 0;
-    my $iflag = 0;
-    my ($krb_inc, $krb_lib);
-
-    foreach my $kdir (@krb_dirs) {
-        my $klib = "$kdir/lib";
-        my $kinc = "$kdir/include";
-    
-        if(glob "$klib/libkrb5.*") {
-            $lflag = 1;
-            $krb_lib = $klib;
-        }
-    
-        if(-f "$kinc/krb5.h") {
-            $iflag = 1;
-            $krb_inc = $kinc;
-        }
-    
-        last if($lflag and $iflag);
-    }
-    
-    # Prompt for the location of key Kerberos files.
-    #
-    if($ENV{KRB5_PROMPT} or $ARGV[0] =~ '-krb5_prompt') {
-        print "\nPlease enter information about your Kerberos5 installation.\n";
-        print " - (Press <Enter> to keep the default value):\n\n";
-    
-        $krb_inc = get_resp('Enter Kerboros5 include directory', $krb_inc);
-        $krb_lib = get_resp('Enter Kerberos5 lib directory', $krb_lib);
-    }
-
-    return($krb_inc, $krb_lib);
-}
- 
-sub get_resp {
-    my $prompt  = shift || 'Answer?';
-    my $default = shift || '';
-    my $resp;
-
-    $prompt .= " [ $default ]" if($default);
-
-    print "\n$prompt: ";
-    chomp($resp = <STDIN>);
-
-    return($resp || $default);
-}
 
 ###EOF###

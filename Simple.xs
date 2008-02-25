@@ -21,12 +21,12 @@
 
 int _krb5_auth(char* user, char* pass)
 {
-    int	                    krbret;
-    krb5_context	        ctx;
-    krb5_creds		        creds;
-    krb5_principal	        princ;
+    int	        krbret;
+    krb5_context	ctx;
+    krb5_creds		creds;
+    krb5_principal	princ;
 
-    int ret = 0;
+    int         ret = 0;
 
     /* Initialize krb5 context...
     */
@@ -86,3 +86,4 @@ krb5_errstr(errcode)
     OUTPUT:
     RETVAL
 
+/***EOF***/

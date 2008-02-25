@@ -21,7 +21,7 @@ require DynaLoader;
 
 our @ISA = qw(DynaLoader);
 
-our $VERSION = '0.32';
+our $VERSION = '0.40';
 
 bootstrap Authen::Krb5::Simple $VERSION;
 
@@ -47,7 +47,7 @@ sub authenticate {
     croak "Missing arg: password\n" unless(defined($pw));
 
     if($pw eq '') {
-        carp "Empty passwords are not supported.\n" if($pw eq '');
+        carp "Empty passwords are not supported.\n";
         return 0;
     }
 
@@ -64,25 +64,20 @@ sub authenticate {
 # Return the error string from the most recent authenticate function.
 #
 sub errstr {
-    my $self = shift;
-
-    return '' if($self->{_err_code} == 0);
-
-    return krb5_errstr($self->{_err_code});
+    return ($_[0]->{_err_code} == 0) ? '' : krb5_errstr($_[0]->{_err_code});
 }
 
 # Return the error code from the most recent authenticate function.
 #
 sub errcode {
-    my $self = shift;
-    return $self->{_err_code};
+    return $_[0]->{_err_code};
 }
 
 # Get or set the default realm
 #
 sub realm {
-    my $self    = shift;
-    my $arg     = shift;
+    my $self = shift;
+    my $arg  = shift;
 
     $self->{_realm} = $arg if(defined($arg));
 
@@ -125,7 +120,7 @@ Authen::Krb5::Simple - Basic user authentication using Kerberos 5
 
   # Create a new object pointing to another realm.
   #
-  my $alt_krb = Authen::Krb5::Simple->new(realm => 'new.realm');
+  my $alt_krb = Authen::Krb5::Simple->new(realm => 'OTHER.REALM');
   ...
 
 =head1 DESCRIPTION
