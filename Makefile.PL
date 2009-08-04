@@ -72,7 +72,7 @@ WriteMakefile(
             AUTHOR     => 'Damien S. Stuart <dstuart@dstuart.org>')
         : ()
     ),
-    'LIBS'      => ["$krb5_lib -lkrb5 -lk5crypto"],
+    'LIBS'      => ["$krb5_lib -lkrb5"],
     'DEFINE'    => '',
     'INC'       => $krb5_inc,
 );

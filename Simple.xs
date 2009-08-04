@@ -1,37 +1,34 @@
 /* $Id: Simple.xs,v 1.1.1.1 2003-01-19 20:33:34 dstuart Exp $
-*******************************************************************************
-**
-** File:    Simple.xs
-**
-** Author:  Damien S. Stuart
-**
-** Purpose: .xs file for the Authen::Krb5::Simple Perl module.
-**
-**
-*******************************************************************************
+ ******************************************************************************
+ *
+ * File:    Simple.xs
+ *
+ * Author:  Damien S. Stuart
+ *
+ * Purpose: .xs file for the Authen::Krb5::Simple Perl module.
+ *
+ *
+ ******************************************************************************
 */
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
 
-#include <stdio.h>
-#include <strings.h>
-
 #include <krb5.h>
 
 int _krb5_auth(char* user, char* pass)
 {
-    int	        krbret;
-    krb5_context	ctx;
-    krb5_creds		creds;
-    krb5_principal	princ;
+    int             krbret;
+    krb5_context    ctx;
+    krb5_creds      creds;
+    krb5_principal  princ;
 
-    int         ret = 0;
+    int ret = 0;
 
     /* Initialize krb5 context...
     */
     if ((krbret = krb5_init_context(&ctx))) {
-	    return krbret;
+        return krbret;
     }
 
     memset(&creds, 0, sizeof(krb5_creds));
@@ -39,29 +36,27 @@ int _krb5_auth(char* user, char* pass)
     /* Get principal name...
     */
     if ((krbret = krb5_parse_name(ctx, user, &princ))) {
-	    ret = krbret;
-	    goto cleanup2;
+        ret = krbret;
+        goto free_context;
     }
 
     /* Check the user's pasword...
     */
     if ((krbret = krb5_get_init_creds_password(
       ctx, &creds, princ, pass, 0, NULL, 0, NULL, NULL))) {
-	    ret = krbret;
-	    goto cleanup;
+        ret = krbret;
     }
 
-cleanup:
     krb5_free_cred_contents(ctx, &creds);
     krb5_free_principal(ctx, princ);
 
-cleanup2:
+free_context:
     krb5_free_context(ctx);
 
     return(ret);
 }
 
-MODULE = Authen::Krb5::Simple     PACKAGE = Authen::Krb5::Simple		
+MODULE = Authen::Krb5::Simple     PACKAGE = Authen::Krb5::Simple        
 
 PROTOTYPES: DISABLE
 
@@ -85,3 +80,4 @@ krb5_errstr(errcode)
     RETVAL = result;
     OUTPUT:
     RETVAL
+

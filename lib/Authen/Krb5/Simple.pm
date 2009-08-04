@@ -21,7 +21,7 @@ require DynaLoader;
 
 our @ISA = qw(DynaLoader);
 
-our $VERSION = '0.40';
+our $VERSION = '0.42';
 
 bootstrap Authen::Krb5::Simple $VERSION;
 
@@ -44,10 +44,11 @@ sub authenticate {
     my $user = shift || croak "Missing arg: username\n";
     my $pw   = shift; 
 
-    croak "Missing arg: password\n" unless(defined($pw));
+    if(!defined($pw) or $pw eq '') {
+        # Codes staring with 'e' are internal to this module.
+        #
+        $self->{_err_code} = 'e1';
 
-    if($pw eq '') {
-        carp "Empty passwords are not supported.\n";
         return 0;
     }
 
@@ -64,6 +65,15 @@ sub authenticate {
 # Return the error string from the most recent authenticate function.
 #
 sub errstr {
+    # Check for module internal (non-krb) error. If it is return the
+    # appropriate error string (there is only one at present).
+    #
+    if($_[0]->{_err_code} =~ /^e(\d+)/) {
+        return('Null or empty password not supported') if($1 == 1);
+    }
+
+    # Otherwise, let krb5_errstr tell us...
+    #
     return ($_[0]->{_err_code} == 0) ? '' : krb5_errstr($_[0]->{_err_code});
 }
 
@@ -132,8 +142,8 @@ that user using the local Kerberos 5 installation.  It was initially created
 to allow perl scripts to perform authentication against a Microsoft Active
 Directory (AD) server configured to accept Kerberos client requests.
 
-B<It is important to note:> This module only performs simple authentication.  It
-does not get, grant, use, or retain any kerberos tickets.  It will check
+B<It is important to note:> This module only performs simple authentication.
+It does not get, grant, use, or retain any kerberos tickets.  It will check
 user credentials against the Kerberos server (as configured on the local
 system) each time the I<authenticate> method is called.
 
@@ -184,12 +194,14 @@ object.
         
 =back
    
-B<realm([NEW.REALM])>
+B<realm()>
+
+B<realm(NEW.REALM)>
 
 =over
 
 The I<realm> method is used to set or get the current default realm.  If an
-argument is passed to this method, the default realm is set to its value. If
+argument is passed to this method, the default realm is set to that value. If
 no argument is supplied, the current realm is returned.
 
 =back
@@ -215,14 +227,14 @@ I<errstr> method to get a meaningful error message.
 
 =head1 BUGS
 
-This version of I<Authen::Krb5::Simple> does not support empty passwords.
-If you pass an empty string (C<''>) as a password, I<authenticate> will print
-a warning and return false, but there will be no error code or string returned
-if the I<errstr> method is called.
+This version of I<Authen::Krb5::Simple> does not support null or
+empty passwords.  If you pass an undefined value or empty string (C<''>)
+as a password, I<authenticate> return false and set the error to indicate
+that null or empty passwords are not supported.
 
 =head1 AUTHOR
 
-Damien S. Stuart, E<lt>damien.stuart@usi.netE<gt>
+Damien S. Stuart, E<lt>dstuart@dstuart.orgE<gt>
 
 =head1 SEE ALSO
 
