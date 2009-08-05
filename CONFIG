@@ -21,7 +21,5 @@
 #TEST_REALM TESTREALM.COM
 #TEST_USER testuser
 #TEST_PASS testpass
-TEST_USER roni
-TEST_PASS makeitso
 
 ###EOF###
