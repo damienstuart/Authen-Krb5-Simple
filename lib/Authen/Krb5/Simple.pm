@@ -1,4 +1,3 @@
-# $Id: Simple.pm,v 1.6 2005-02-21 23:50:37 dstuart Exp $
 ###############################################################################
 #
 # File:    Simple.pm
@@ -59,7 +58,9 @@ sub authenticate {
         $user .= "\@$self->{_realm}";
     }
 
-    return(($self->{_err_code} = krb5_auth($user, $pw)) == 0);
+    $self->{_err_code} = krb5_auth($user, $pw);
+
+    return(($self->{_err_code} == 0) ? 1 : 0);
 }
 
 # Return the error string from the most recent authenticate function.
@@ -194,7 +195,7 @@ object.
         
 =back
    
-B<realm()>
+B<realm( )>
 
 B<realm(NEW.REALM)>
 

@@ -1,4 +1,4 @@
-Authen::Krb5::Simple version 0.32
+Authen::Krb5::Simple version 0.42
 ===============================================================================
 
 The Authen::Krb5::Simple module provides a means to authenticate a
@@ -43,7 +43,7 @@ on the local system.
 
 COPYRIGHT AND LICENCE
 
-Copyright (c) 2003-2008 Damien S. Stuart. All rights reserved.
+Copyright (c) 2003-2009 Damien S. Stuart. All rights reserved.
     This program is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.
 

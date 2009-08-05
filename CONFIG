@@ -1,4 +1,3 @@
-# $Id: CONFIG,v 1.1.1.1 2003-01-19 20:33:34 dstuart Exp $
 ###############################################################################
 #
 # File:    CONFIG
@@ -16,11 +15,13 @@
 # Note: TEST_REALM is optional.  If omitted, the default realm for the
 #       local system will be used.
 #
-# ** If you use these amek sure the realm and user exist and the password
+# ** If you use these make sure the realm and user exist and the password
 #    is correct.  Otherwise, the test will fail.
 #
 #TEST_REALM TESTREALM.COM
 #TEST_USER testuser
 #TEST_PASS testpass
+TEST_USER roni
+TEST_PASS makeitso
 
 ###EOF###
