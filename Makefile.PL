@@ -55,7 +55,7 @@ if(exists($ENV{KRB5_LIB})) {
 # locations for these libs.
 #
 check_lib_or_exit(
-    lib     => [qw( krb5 k5crypto com_err )],
+    lib     => [qw( krb5 )],
     libpath => \@kr_lib_dirs
 );
 
