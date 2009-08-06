@@ -30,9 +30,18 @@ Once that is done, then type the following:
 
 Note: In the absence of the KRB5_INCLUDE and KRB4LIB environment variables
       mentioned above, the module will make an attempt to try and find
-      out the location of the Kerberos 5 include and lib files.  If that
-      doesn't work, you will need to manually override by setting the
-      environment variables or editing Makfile.PL to directly.
+      out the location of the Kerberos 5 include and lib files.  
+
+      If you continue to get "Can't build and link to 'xxx'" errors from
+      the "perl Makefile.PL" command. you can try setting the skip_lib_check
+      environment variable to skip the lib check (this was necessary on some
+      FreeBSD systems that had conflicting libkrb5.so files). For example:
+
+        skip_lib_check=1 perl Makefile.PL
+
+      If that doesn't work, you will need to manually override by setting
+      the environment variables (if not already set) or editing Makfile.PL
+      to directly.
 
 DEPENDENCIES
 

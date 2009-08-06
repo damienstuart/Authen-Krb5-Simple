@@ -57,14 +57,16 @@ if(exists($ENV{KRB5_LIB})) {
 check_lib_or_exit(
     lib     => [qw( krb5 )],
     libpath => \@kr_lib_dirs
-);
+) unless($ENV{skip_lib_check});
 
 # Write out the Makefile
 #
 WriteMakefile(
     'NAME'          => 'Authen::Krb5::Simple',
     'VERSION_FROM'  => 'lib/Authen/Krb5/Simple.pm',
-    'PREREQ_PM'     => {},
+    'PREREQ_PM'     => {
+        'Test::More',
+    },
     ($] >= 5.006
         ? (
             ABSTRACT   => 'Perl module that performs Kerberos 5 authentication',
