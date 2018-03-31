@@ -1,5 +1,11 @@
 Revision history for Perl extension Authen::Krb5::Simple.
 
+0.50  Tue May 27 12:49 2014
+    - No longer bundling the Devel::CheckLib code with this module.
+    - Devel-CheckLib is used, but specified via BUILD_REQUIRES.
+    - Added some additional library paths to check when looking for libkrb5.
+    - Minor tweaks to the README file.
+
 0.42  Mon Aug 03 23:41 2009
     - Changed handling of null/empty passwords.
     - Added internal (non-krb) error message handling.

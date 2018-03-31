@@ -8,8 +8,13 @@
 #
 ###############################################################################
 #
-use lib 'inc';
-use Devel::CheckLib;
+#use lib qw(inc);
+BEGIN {
+    die "You must install the Devel::CheckLib module to build Authen::Krb5::Simple\n"
+        unless(eval "require Devel::CheckLib");
+
+}
+
 use ExtUtils::MakeMaker;
 
 my ($krb5_inc, $krb5_lib);
@@ -29,6 +34,16 @@ my @krb_lib_dirs =  qw(
     /usr/lib/krb
     /usr/local/lib64/krb
     /usr/local/lib/krb
+    /opt/local/lib
+    /opt/local/lib64
+    /opt/local/lib/krb5
+    /opt/local/lib64/krb5
+    /opt/local/lib/krb
+    /opt/local/lib64/krb
+    /opt/local/krb/lib
+    /opt/local/krb5/lib
+    /opt/local/krb/lib64
+    /opt/local/krb5/lib64
     /opt/krb5/lib64
     /opt/krb5/lib
     /opt/krb/lib64
@@ -37,6 +52,8 @@ my @krb_lib_dirs =  qw(
     /usr/heimdal/lib
     /usr/local/heimdal/lib64
     /usr/local/heimdal/lib
+    /opt/local/heimdal/lib64
+    /opt/local/heimdal/lib
     /opt/heimdal/lib64
     /opt/heimdal/lib
 );
@@ -54,7 +71,7 @@ if(exists($ENV{KRB5_LIB})) {
 # See if the needed libs are available.  Take a shot at several "possible"
 # locations for these libs.
 #
-check_lib_or_exit(
+Devel::CheckLib::check_lib_or_exit(
     lib     => [qw( krb5 )],
     libpath => \@kr_lib_dirs
 ) unless($ENV{skip_lib_check});
@@ -65,7 +82,8 @@ WriteMakefile(
     'NAME'          => 'Authen::Krb5::Simple',
     'VERSION_FROM'  => 'lib/Authen/Krb5/Simple.pm',
     'PREREQ_PM'     => {
-        'Test::More',
+        'Devel::CheckLib' => 0,
+        'Test::More' => 0,
     },
     ($] >= 5.006
         ? (
@@ -73,6 +91,10 @@ WriteMakefile(
             AUTHOR     => 'Damien S. Stuart <dstuart@dstuart.org>')
         : ()
     ),
+    'BUILD_REQUIRES'   => {
+        'Devel::CheckLib' => 0,
+        'Test::More' => 0,
+    },
     'LIBS'      => ["$krb5_lib -lkrb5"],
     'DEFINE'    => '',
     'INC'       => $krb5_inc,
